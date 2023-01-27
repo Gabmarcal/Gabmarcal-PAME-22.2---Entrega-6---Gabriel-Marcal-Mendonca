@@ -8,7 +8,7 @@ class Users(BaseModel):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(30))
     idade = db.Column(db.Integer)
-    senha_hash = db.Column(db.LargeBinary(128))
+    password_hash = db.Column(db.LargeBinary(128))
 
     @property
     def password(self):
@@ -16,7 +16,7 @@ class Users(BaseModel):
 
     @password.setter
     def password(self,password) -> None:
-        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        self.password_hash = bcrypt.hashpw(password.encode('UTF-8'), bcrypt.gensalt())
     
     def check_password(self,password) -> bool:
-        return bcrypt.checkpw(password.enconde(),self.password_hash)
+        return bcrypt.checkpw(password.encode(),self.password_hash)

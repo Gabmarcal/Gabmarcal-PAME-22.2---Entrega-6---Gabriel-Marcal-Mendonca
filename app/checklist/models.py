@@ -1,5 +1,6 @@
 from app.models import BaseModel
 from app.extensions import db
+from app.medicine.models import Medicine
 
 class Checklist(BaseModel):
     __tablename__ = "checklist"
@@ -10,3 +11,5 @@ class Checklist(BaseModel):
     qnt_estoque = db.Column(db.Integer)
     qnt_ideal = db.Column(db.Integer)
     comprar = db.Column(db.Integer)
+    
+    #medicine = db.relationship(Medicine, backref='checklist', uselist=False)

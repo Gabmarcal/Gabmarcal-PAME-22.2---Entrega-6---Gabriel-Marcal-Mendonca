@@ -2,9 +2,9 @@ from flask import request
 from flask.views import MethodView
 
 from .models import Users
-from .schemas import UserSchema
+from .schemas import UserSchema, LoginSchema
 
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 class UserController(MethodView):
     
@@ -28,12 +28,14 @@ class UserController(MethodView):
 
 class UserDetails(MethodView):
 
-    decorators = [jwt_required]
+    decorators = [jwt_required()]
 
     def get(self,id):
         schema = UserSchema()
 
         user = Users.query.get(id)
+
+        if id!=get_jwt_identity(): return{}, 401
 
         if not user: return{}, 404
 
@@ -84,7 +86,7 @@ class UserDetails(MethodView):
 class UserLogin(MethodView):
 
     def post(self):
-        schema = UserSchema()
+        schema = LoginSchema()
         data = schema.load(request.json)
 
         user = Users.query.filter_by(username=data['username']).first()
@@ -95,4 +97,4 @@ class UserLogin(MethodView):
 
         token = create_access_token(identity=user.id)
 
-        return schema.dump(user), 200
+        return {"user": UserSchema().dump(user), "token": token}, 200

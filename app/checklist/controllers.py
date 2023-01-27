@@ -9,7 +9,15 @@ class ChecklistController(MethodView):
 
     def get(self):
         schema=ChecklistSchema()
-        checklist = Checklist.query.all()
+
+        data = request.args
+        remedio = data.get('remedio')
+
+        if not remedio:
+            checklist = Checklist.query.all()
+            return schema.dump(checklist,many=True), 200
+        
+        checklist = Checklist.query.filter_by(remedio=remedio)
         return schema.dump(checklist,many=True), 200
 
 class ChecklistDetails(MethodView):
@@ -28,7 +36,7 @@ class ChecklistDetails(MethodView):
 
         medicine = Medicine.query.get(id_remedio)
         
-        if not medicine: return{}, 404
+        #if not medicine: return{}, 404
 
         data = request.json
 

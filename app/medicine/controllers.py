@@ -8,6 +8,11 @@ class MedicineController(MethodView):
     
     def post(self):
         schema = MedicineSchema()
+
+        medicine = Medicine.query.get('id_remedio')
+        
+        #if medicine.checklist: return{}, 401
+        
         data = request.json
 
         try:
@@ -21,6 +26,40 @@ class MedicineController(MethodView):
     
     def get(self):
         schema=MedicineSchema()
+
+        data = request.args
+        nome = data.get('nome')
+        validade = data.get('validade')
+        prescricao = data.get('prescricao')
+
+        if nome and prescricao and validade:
+            medicine = Medicine.query.filter_by(nome=nome).filter_by(prescricao=prescricao).filter_by(validade=validade)
+            return schema.dump(medicine,many=True), 200
+        
+        elif nome and prescricao:
+            medicine = Medicine.query.filter_by(nome=nome).filter_by(prescricao=prescricao)
+            return schema.dump(medicine,many=True), 200
+        
+        elif nome and validade:
+            medicine = Medicine.query.filter_by(nome=nome).filter_by(validade=validade)
+            return schema.dump(medicine,many=True), 200
+
+        elif prescricao and validade:
+            medicine = Medicine.query.filter_by(prescricao=prescricao).filter_by(validade=validade)
+            return schema.dump(medicine,many=True), 200
+        
+        elif nome:
+            medicine = Medicine.query.filter_by(nome=nome)
+            return schema.dump(medicine,many=True), 200
+        
+        elif prescricao:
+            medicine = Medicine.query.filter_by(prescricao=prescricao)
+            return schema.dump(medicine,many=True), 200
+        
+        elif validade:
+            medicine = Medicine.query.filter_by(validade=validade)
+            return schema.dump(medicine,many=True), 200
+
         medicine = Medicine.query.all()
         return schema.dump(medicine,many=True), 200
 

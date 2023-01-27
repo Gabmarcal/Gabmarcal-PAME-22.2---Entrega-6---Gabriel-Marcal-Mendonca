@@ -9,3 +9,5 @@ class Medicine(BaseModel):
     prescricao = db.Column(db.String(30))
     fabricante = db.Column(db.String(30))
     validade = db.Column(db.String(30))
+
+    #checklist = db.Column(db.Integer, db.ForeignKey('checklist.id'))
